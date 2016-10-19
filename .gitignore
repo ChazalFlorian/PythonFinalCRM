@@ -1,0 +1,3 @@
+# Ignore the cache files
+*.pyc
+*.pyo
