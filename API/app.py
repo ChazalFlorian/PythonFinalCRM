@@ -7,4 +7,5 @@ sys.path.append(PARENT_DIR)
 
 from API import app
 
-app.run()
+if __name__ == '__main__':
+    app.run()
