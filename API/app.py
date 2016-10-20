@@ -10,7 +10,3 @@ from API.models import Client
 
 if __name__ == '__main__':
     app.run()
-    BDD = []
-
-    
-    BDD.append(addClient("test1", "Stark Entreprise", "Prospect"))
