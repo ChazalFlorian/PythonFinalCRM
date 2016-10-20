@@ -6,6 +6,11 @@ PARENT_DIR = os.path.dirname(CURRENT_DIR)
 sys.path.append(PARENT_DIR)
 
 from API import app
+from API.models import Client
 
 if __name__ == '__main__':
     app.run()
+    BDD = []
+
+    
+    BDD.append(addClient("test1", "Stark Entreprise", "Prospect"))
