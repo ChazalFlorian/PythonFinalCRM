@@ -1,12 +1,31 @@
-from API.models import Client
+from API.models.client import Client
 
 
 class Clients:
 
-    def init():
-        self.Contener = []
+    __instance = None
 
-    def addClient(firstname, entreprise, state):
-            test = Client(firstname, entreprise, state)
-            self.Contener.append(test)
-            return test
+    class __Clients:
+
+        def __init__(self):
+            self.container = []
+            self.lastId = 0
+
+        def __str__(self):
+            return repr(self) + self.container
+
+        def addClient(self, name, entreprise, state):
+                client = Client(self.lastId + 1, name, entreprise, state)
+                self.container.append(client)
+                self.lastId += 1
+                return client
+
+    def __init__(self):
+        if not Clients.__instance:
+            Clients.__instance = Clients.__Clients()
+
+    def __str__(self):
+        return repr(self)
+
+    def __getattr__(self, name):
+        return getattr(self.__instance, name)
