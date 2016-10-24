@@ -1,9 +1,21 @@
 from enum import Enum
 
 
-class Client:
-    state = Enum('Prospect', 'Projet en cours', 'Projet Terminé', 'Partenaire')
+State = Enum(
+    'State',
+    [
+        ('prospect', 'Prospect'),
+        ('inProgress', 'Projet en cours'),
+        ('finished', 'Projet terminé'),
+        ('partner', 'Partenaire')
+    ]
+)
 
-    def init(self, name, entreprise, state):
+
+class Client:
+
+    def __init__(self, id, name, company, state):
+        self.id = id
         self.name = name
-        self.entreprise = entreprise
+        self.company = company
+        self.state = State[state]
