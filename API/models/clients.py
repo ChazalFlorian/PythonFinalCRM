@@ -11,9 +11,6 @@ class Clients:
             self.container = []
             self.lastId = 0
 
-        def __str__(self):
-            return repr(self) + self.container
-
         def addClient(self, name, entreprise, state):
                 client = Client(self.lastId + 1, name, entreprise, state)
                 self.container.append(client)
@@ -23,9 +20,6 @@ class Clients:
     def __init__(self):
         if not Clients.__instance:
             Clients.__instance = Clients.__Clients()
-
-    def __str__(self):
-        return repr(self)
 
     def __getattr__(self, name):
         return getattr(self.__instance, name)
