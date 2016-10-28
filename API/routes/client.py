@@ -20,7 +20,7 @@ app.add_url_rule(
     '/client/add',
     'addClient',
     client.add,
-    methods=["POST"]
+    methods=["PUT"]
 )
 
 app.add_url_rule(
@@ -34,5 +34,5 @@ app.add_url_rule(
     '/client/delete/<int:id>',
     'deleteClient',
     client.delete,
-    methods=["GET"]
+    methods=["DELETE"]
 )
