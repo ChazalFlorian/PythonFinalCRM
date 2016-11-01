@@ -1,44 +1,53 @@
 from flask import request
 from json import dumps
 
-from API.models.clients import Clients
+from API import db
+from API.models.client import Client
 from API.models.client import State
 
 
 def get(id):
-    clients = Clients()
+    client = Client.query.filter_by(id=id).first()
 
-    for client in clients.container:
-        if client.id == id:
-            return dumps({
-                "success": True,
-                "client": {
-                    "id": client.id,
-                    "name": client.name,
-                    "company": client.company,
-                    "state": client.state.value
-                }
-            }, indent=4)
-
-    return dumps({
-        "success": False,
-        "message": "Client not found"
-    }, indent=4)
-
-
-def getAll():
-    clients = Clients()
-    clientsList = []
-
-    for client in clients.container:
-            clientsList.append({
+    if client is None:
+        return dumps({
+            "success": False,
+            "message": "Client not found"
+        }, indent=4)
+    else:
+        return dumps({
+            "success": True,
+            "client": {
                 "id": client.id,
                 "name": client.name,
                 "company": client.company,
                 "state": client.state.value
-            })
+            }
+        }, indent=4)
 
-    return dumps(clientsList, indent=4)
+
+def getAll():
+    clients = Client.query.all()
+    clientsList = []
+
+    if clients is None:
+        return dumps({
+            "success": False,
+            "message": "Error during clients getting"
+        }, indent=4)
+    else:
+        for client in clients:
+                clientsList.append({
+                    "id": client.id,
+                    "name": client.name,
+                    "company": client.company,
+                    "state": client.state.value
+                })
+
+        return dumps({
+            "success": True,
+            "clients": clientsList
+        }, indent=4)
 
 
 # Post parameters :
@@ -53,12 +62,14 @@ def add():
         and 'state' in request.form
         and request.form['state'] in State.__members__
     ):
-        clients = Clients()
-        client = clients.addClient(
+        client = Client(
             request.form['name'],
             request.form['company'],
-            request.form['state']
+            request.form['state'],
         )
+
+        db.session.add(client)
+        db.session.commit()
 
         return dumps({
             "success": True,
@@ -82,30 +93,31 @@ def add():
 #    state ('prospect' | 'inProgress' | 'finished' | 'partner')
 #
 def edit(id):
+    client = Client.query.filter_by(id=id).first()
     if (
         'name' in request.form
         and 'company' in request.form
         and 'state' in request.form
         and request.form['state'] in State.__members__
+        and client is not None
     ):
-        clients = Clients()
 
-        for client in clients.container:
-            if client.id == id:
-                client.name = request.form['name']
-                client.company = request.form['company']
-                client.state = State[request.form['state']]
+        client.name = request.form['name']
+        client.company = request.form['company']
+        client.state = State[request.form['state']]
 
-                return dumps({
-                    "success": True,
-                    "client": {
-                        "id": client.id,
-                        "name": client.name,
-                        "company": client.company,
-                        "state": client.state.value
-                    }
-                }, indent=4)
+        db.session.commit()
 
+        return dumps({
+            "success": True,
+            "client": {
+                "id": client.id,
+                "name": client.name,
+                "company": client.company,
+                "state": client.state.value
+            }
+        }, indent=4)
+    elif client is None:
         return dumps({
             "success": False,
             "message": "Client not found"
@@ -118,17 +130,16 @@ def edit(id):
 
 
 def delete(id):
-    clients = Clients()
+    client = Client.query.filter_by(id=id).first()
 
-    for client in clients.container:
-        if client.id == id:
-            clients.container.remove(client)
-
-            return dumps({
-                "success": True
-            }, indent=4)
-
-    return dumps({
-        "success": False,
-        "message": "Client not found"
-    }, indent=4)
+    if client is None:
+        return dumps({
+            "success": False,
+            "message": "Client not found"
+        }, indent=4)
+    else:
+        db.session.delete(client)
+        db.session.commit()
+        return dumps({
+            "success": True,
+        }, indent=4)
