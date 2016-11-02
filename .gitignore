@@ -1,3 +1,4 @@
 # Ignore the cache files
 *.pyc
 *.pyo
+API/config/db.json
