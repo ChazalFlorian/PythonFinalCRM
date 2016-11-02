@@ -26,11 +26,89 @@ def get(id):
         }, indent=4)
 
 
+def getByName(name):
+    clients = Client.query.filter_by(name=name).all()
+    clientsList = []
+
+    if bool(clients) is False:
+        return dumps({
+            "success": False,
+            "message": "No client found"
+        }, indent=4)
+    else:
+        for client in clients:
+                clientsList.append({
+                    "id": client.id,
+                    "name": client.name,
+                    "company": client.company,
+                    "state": client.state.value
+                })
+
+        return dumps({
+            "success": True,
+            "clients": clientsList
+        }, indent=4)
+
+
+def getByCompany(company):
+    clients = Client.query.filter_by(company=company).all()
+    clientsList = []
+
+    if bool(clients) is False:
+        return dumps({
+            "success": False,
+            "message": "No client found"
+        }, indent=4)
+    else:
+        for client in clients:
+                clientsList.append({
+                    "id": client.id,
+                    "name": client.name,
+                    "company": client.company,
+                    "state": client.state.value
+                })
+
+        return dumps({
+            "success": True,
+            "clients": clientsList
+        }, indent=4)
+
+
+def getByState(state):
+    clients = Client.query.filter_by(state=state).all()
+    clientsList = []
+
+    if state not in State.__members__:
+        return dumps({
+            "succes": False,
+            "message": "Wrong state"
+        }, indent=4)
+
+    if bool(clients) is False:
+        return dumps({
+            "success": False,
+            "message": "No client found"
+        }, indent=4)
+    else:
+        for client in clients:
+                clientsList.append({
+                    "id": client.id,
+                    "name": client.name,
+                    "company": client.company,
+                    "state": client.state.value
+                })
+
+        return dumps({
+            "success": True,
+            "clients": clientsList
+        }, indent=4)
+
+
 def getAll():
     clients = Client.query.all()
     clientsList = []
 
-    if clients is None:
+    if bool(clients) is False:
         return dumps({
             "success": False,
             "message": "Error during clients getting"
@@ -81,7 +159,7 @@ def getCustom():
             "message": "No parameter given"
         }, indent=4)
 
-    if clients is None:
+    if bool(clients) is False:
         return dumps({
             "success": False,
             "message": "Client not found"
