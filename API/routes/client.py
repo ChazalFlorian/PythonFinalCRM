@@ -17,6 +17,13 @@ app.add_url_rule(
 )
 
 app.add_url_rule(
+    '/client/get',
+    'getCustomClients',
+    client.getCustom,
+    methods=["POST"]
+)
+
+app.add_url_rule(
     '/client/add',
     'addClient',
     client.add,

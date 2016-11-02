@@ -50,6 +50,58 @@ def getAll():
         }, indent=4)
 
 
+def getCustom():
+    params = {}
+
+    if "name" in request.form:
+        params["name"] = request.form['name']
+
+    if "company" in request.form:
+        params["company"] = request.form['company']
+
+    if (
+        "state" in request.form
+        and request.form['state'] in State.__members__
+    ):
+        params["state"] = request.form['state']
+    elif (
+        "state" in request.form
+        and request.form['state'] not in State.__members__
+    ):
+        return dumps({
+            "success": False,
+            "message": "Wrong state"
+        }, indent=4)
+
+    if bool(params) is True:
+        clients = Client.query.filter_by(**params).all()
+    else:
+        return dumps({
+            "success": False,
+            "message": "No parameter given"
+        }, indent=4)
+
+    if clients is None:
+        return dumps({
+            "success": False,
+            "message": "Client not found"
+        }, indent=4)
+    else:
+        clientsList = []
+        for client in clients:
+                clientsList.append({
+                    "id": client.id,
+                    "name": client.name,
+                    "company": client.company,
+                    "state": client.state.value
+                })
+
+        return dumps({
+            "success": True,
+            "clients": clientsList
+        }, indent=4)
+
+
 # Post parameters :
 #    name (string)
 #    company (string)
