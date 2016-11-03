@@ -1,4 +1,12 @@
 # Ignore the cache files
 *.pyc
 *.pyo
+
+# Ignore true config files
+API/config/config.json
 API/config/db.json
+
+# Ignore the CDN content
+CDN/images/*.jpg
+CDN/images/*.jpeg
+CDN/images/*.png
