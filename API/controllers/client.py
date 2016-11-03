@@ -194,6 +194,7 @@ def getCustom():
 #    state ('prospect' | 'inProgress' | 'finished' | 'partner')
 #
 def add():
+    print(request.form)
     if (
         'name' in request.form
         and 'company' in request.form

@@ -9,10 +9,13 @@ with open(os.path.dirname(os.path.abspath(__file__))+"/config/db.json") as dbcon
 # Directories setting
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PARENT_DIR = os.path.dirname(CURRENT_DIR)
+print(PARENT_DIR)
 CDN_PATH = PARENT_DIR + '/CDN/images/'
-TEMPLATE_PATH = PARENT_DIR + "/GUI/"
+TEMPLATE_PATH = PARENT_DIR + '/GUI/'
 
-app = Flask(__name__, template_folder=TEMPLATE_PATH)
+app = Flask(__name__, template_folder=TEMPLATE_PATH,
+            static_url_path=TEMPLATE_PATH
+            )
 
 # File Upload
 app.config['UPLOAD_FOLDER'] = CDN_PATH
@@ -22,5 +25,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{}:{}@localhost/pythonc
 db = SQLAlchemy(app)
 
 # import routes
+import API.routes.home
 import API.routes.client
 import API.routes.SpreadSheet.spreadsheet

@@ -1,4 +1,5 @@
 from API import db
+from json import dumps
 from datetime import datetime
 from API.models.client import Client
 from API.models.SpreadSheet.wizard import spreadWizard
@@ -8,7 +9,6 @@ wizard = spreadWizard()
 
 
 def exportDB(spreadURL=""):
-    print('test')
 
     clients = Client.query.all()
 
@@ -31,6 +31,7 @@ def exportDB(spreadURL=""):
                 worksheet.update_cell((i+2),
                                       (k+1),
                                       client.__dict__[str(colValue)])
+    return dumps({"success": True})
 
 
 def importDB(spread="", worksheet=1, header=True):
@@ -50,11 +51,16 @@ def importDB(spread="", worksheet=1, header=True):
 
     for index, value in enumerate(values):
         if(Client.query.filter_by(id=value[0]).first()):
+            test = ""
+            print(value)
+            print(value[3][6:])
             client = Client(
                             value[1],
                             value[2],
-                            value[3][6:]
+                            value[3][6:],
+                            test
                             )
 
             db.session.add(client)
             db.session.commit()
+    return dumps({"success": True})
