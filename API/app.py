@@ -7,8 +7,7 @@ sys.path.append(PARENT_DIR)
 
 from API import app
 from API.models.clients import Clients
+from API.models.GSpreadInterface.Interface import GSpreadInterface
 
 if __name__ == '__main__':
     app.run()
-
-client = Clients()
