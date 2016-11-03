@@ -1,7 +1,9 @@
+import os
 from flask import request
 from json import dumps
+from random import randint
 
-from API import db
+from API import app, db
 from API.models.client import Client
 from API.models.client import State
 
@@ -21,7 +23,8 @@ def get(id):
                 "id": client.id,
                 "name": client.name,
                 "company": client.company,
-                "state": client.state.value
+                "state": client.state.value,
+                "image": app.config['UPLOAD_FOLDER'] + client.image
             }
         }, indent=4)
 
@@ -41,7 +44,8 @@ def getByName(name):
                     "id": client.id,
                     "name": client.name,
                     "company": client.company,
-                    "state": client.state.value
+                    "state": client.state.value,
+                    "image": app.config['UPLOAD_FOLDER'] + client.image
                 })
 
         return dumps({
@@ -65,7 +69,8 @@ def getByCompany(company):
                     "id": client.id,
                     "name": client.name,
                     "company": client.company,
-                    "state": client.state.value
+                    "state": client.state.value,
+                    "image": app.config['UPLOAD_FOLDER'] + client.image
                 })
 
         return dumps({
@@ -95,7 +100,8 @@ def getByState(state):
                     "id": client.id,
                     "name": client.name,
                     "company": client.company,
-                    "state": client.state.value
+                    "state": client.state.value,
+                    "image": app.config['UPLOAD_FOLDER'] + client.image
                 })
 
         return dumps({
@@ -119,7 +125,8 @@ def getAll():
                     "id": client.id,
                     "name": client.name,
                     "company": client.company,
-                    "state": client.state.value
+                    "state": client.state.value,
+                    "image": app.config['UPLOAD_FOLDER'] + client.image
                 })
 
         return dumps({
@@ -171,7 +178,8 @@ def getCustom():
                     "id": client.id,
                     "name": client.name,
                     "company": client.company,
-                    "state": client.state.value
+                    "state": client.state.value,
+                    "image": app.config['UPLOAD_FOLDER'] + client.image
                 })
 
         return dumps({
@@ -191,11 +199,19 @@ def add():
         and 'company' in request.form
         and 'state' in request.form
         and request.form['state'] in State.__members__
+        and 'file' in request.files
+        and request.files['file'] != ''
     ):
+        file = request.files['file']
+        if file and allowed_file(file.filename):
+            filename = request.form['name'] + str(randint(1, 999999999999)) + '.' + file.filename.rsplit('.', 1)[1]
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
         client = Client(
             request.form['name'],
             request.form['company'],
             request.form['state'],
+            filename
         )
 
         db.session.add(client)
@@ -226,15 +242,31 @@ def edit(id):
     client = Client.query.filter_by(id=id).first()
     if (
         'name' in request.form
-        and 'company' in request.form
-        and 'state' in request.form
-        and request.form['state'] in State.__members__
+        or 'company' in request.form
+        or 'state' in request.form
         and client is not None
     ):
 
-        client.name = request.form['name']
-        client.company = request.form['company']
-        client.state = State[request.form['state']]
+        if 'name' in request.form:
+            client.name = request.form['name'] or ''
+
+        if 'company' in request.form:
+            client.company = request.form['company'] or ''
+
+        if 'state' in request.form:
+            if request.form['state'] in State.__members__:
+                client.state = State[request.form['state']] or ''
+            else:
+                return dumps({
+                    "success": False,
+                    "message": "Wrong state"
+                }, indent=4)
+
+        if 'file' in request.files and request.files['file'] != '':
+            file = request.files['file']
+            if file and allowed_file(file.filename):
+                filename = client.image.rsplit('.', 1)[0] + '.' + file.filename.rsplit('.', 1)[1]
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         db.session.commit()
 
@@ -273,3 +305,12 @@ def delete(id):
         return dumps({
             "success": True,
         }, indent=4)
+
+
+# Upload filename check
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS

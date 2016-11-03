@@ -18,11 +18,13 @@ class Client(db.Model):
     name = db.Column(db.String(80))
     company = db.Column(db.String(80))
     state = db.Column(db.Enum(State))
+    image = db.Column(db.String(80))
 
-    def __init__(self, name, company, state):
+    def __init__(self, name, company, state, image):
         self.name = name
         self.company = company
         self.state = state
+        self.image = image
 
     def __repr__(self):
         return '<User %r>' % self.name
