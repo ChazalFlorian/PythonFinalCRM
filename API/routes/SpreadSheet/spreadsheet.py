@@ -7,3 +7,10 @@ app.add_url_rule(
     spreadsheet.exportDB(),
     methods=["GET"]
 )
+
+app.add_url_rule(
+    '/spreadsheet/import/',
+    'importSpreadSheet',
+    spreadsheet.importDB(),
+    methods=["GET"]
+)
