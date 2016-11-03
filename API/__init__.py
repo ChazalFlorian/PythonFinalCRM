@@ -14,10 +14,6 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://{}:{}@localhost/pythoncrm'.format(data['username'], data['password'])
 db = SQLAlchemy(app)
 
-# OAuth
-oauth = OAuth2Provider()
-oauth.init_app(app)
-
 # File upload
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 PARENT_DIR = os.path.dirname(CURRENT_DIR)
