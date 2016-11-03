@@ -4,11 +4,10 @@ from API.models.client import Client
 from API.models.SpreadSheet.wizard import spreadWizard
 
 client_columns = Client.__table__.columns.keys()
-# wizard = spreadWizard()
+wizard = spreadWizard()
 
 
 def exportDB(spreadURL=""):
-    wizard = spreadWizard()
     print('test')
 
     clients = Client.query.all()
@@ -35,7 +34,7 @@ def exportDB(spreadURL=""):
 
 
 def importDB(spread="", worksheet=1, header=True):
-    wizard = spreadWizard()
+
     if(spread != ""):
         spread = wizard.gc.open_by_url(spread)
     else:
