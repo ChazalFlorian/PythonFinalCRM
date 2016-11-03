@@ -1,2 +1,4 @@
 #Ignore true config files
 config.json
+db.json
+spreadsheet.json
