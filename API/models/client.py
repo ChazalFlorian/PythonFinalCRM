@@ -1,4 +1,5 @@
 from enum import Enum
+from API import db
 
 
 State = Enum(
@@ -12,10 +13,16 @@ State = Enum(
 )
 
 
-class Client:
+class Client(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80))
+    company = db.Column(db.String(80))
+    state = db.Column(db.Enum(State))
 
-    def __init__(self, id, name, company, state):
-        self.id = id
+    def __init__(self, name, company, state):
         self.name = name
         self.company = company
-        self.state = State[state]
+        self.state = state
+
+    def __repr__(self):
+        return '<User %r>' % self.name
