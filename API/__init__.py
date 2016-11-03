@@ -24,4 +24,6 @@ PARENT_DIR = os.path.dirname(CURRENT_DIR)
 CDN_PATH = PARENT_DIR + '/CDN/images/'
 app.config['UPLOAD_FOLDER'] = CDN_PATH
 
+
 import API.routes.client
+import API.routes.SpreadSheet.spreadsheet
