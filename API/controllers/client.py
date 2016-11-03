@@ -244,6 +244,7 @@ def edit(id):
         'name' in request.form
         or 'company' in request.form
         or 'state' in request.form
+        or ('file' in request.files and request.files['file'] != '')
         and client is not None
     ):
 
